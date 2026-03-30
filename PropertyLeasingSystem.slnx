@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="PropertyLeasingSystem.API/PropertyLeasingSystem.API.csproj" Id="f3b7c272-6175-48ea-b785-cddc17282672" />
+  <Project Path="PropertyLeasingSystem.MVC/PropertyLeasingSystem.MVC.csproj" Id="79b9760f-1a79-4b0f-9eac-304796034edc" />
+  <Project Path="PropertyLeasingSystem.Reporting/PropertyLeasingSystem.Reporting.csproj" Id="9099a6f2-97e9-4de1-9f2e-7c359e11be0e" />
+</Solution>
