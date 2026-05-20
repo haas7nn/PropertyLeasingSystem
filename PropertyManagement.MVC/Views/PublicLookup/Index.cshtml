@@ -1,0 +1,78 @@
+@model PropertyManagement.MVC.Models.MaintenanceLookupDto
+@{ ViewData["Title"] = "Track Request"; }
+
+<div style="min-height:calc(100vh - 120px);display:flex;align-items:center;justify-content:center;padding:2rem 1rem">
+  <div style="width:100%;max-width:520px">
+    <div style="text-align:center;margin-bottom:2rem">
+      <div style="width:56px;height:56px;background:#fef3c7;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;color:#d97706;margin:0 auto .75rem">
+        <i class="bi bi-search"></i>
+      </div>
+      <div style="font-size:1.3rem;font-weight:800;letter-spacing:-.03em">Track Maintenance Request</div>
+      <div style="font-size:.84rem;color:var(--muted);margin-top:.25rem">No login required — enter your ticket number and phone</div>
+    </div>
+
+    <div class="form-card">
+      <form asp-action="Index" method="post">
+        @Html.AntiForgeryToken()
+        <div class="row g-3 mb-3">
+          <div class="col-md-6">
+            <label class="form-label">Ticket Number <span style="color:var(--red)">*</span></label>
+            <input type="text" name="ticketNumber" class="form-control mono" placeholder="MNT-260518-A3F9C2" required style="font-size:.85rem" />
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Phone Number <span style="color:var(--red)">*</span></label>
+            <input type="text" name="phoneNumber" class="form-control" placeholder="+973 XXXX XXXX" required />
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary w-100" style="justify-content:center;padding:.65rem"><i class="bi bi-search me-1"></i> Track</button>
+      </form>
+    </div>
+
+    @if (Model != null)
+    {
+      @if (Model.ApiDown)
+      {
+        <div class="alert alert-danger mt-3"><i class="bi bi-wifi-off"></i> Service temporarily unavailable. Please try again later.</div>
+      }
+      else if (string.IsNullOrEmpty(Model.TicketNumber))
+      {
+        <div class="alert alert-warning mt-3"><i class="bi bi-question-circle"></i> No matching request found. Check your ticket number and phone number.</div>
+      }
+      else
+      {
+        var sc = Model.Status switch {"Submitted"=>"s-pending","Assigned"=>"s-assigned","InProgress"=>"s-inprogress","Resolved"=>"s-resolved","Closed"=>"s-closed",_=>"s-pending"};
+        <div class="card p-4 mt-3">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem">
+            <div>
+              <div style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:.3rem">Ticket</div>
+              <div class="mono fw-700" style="font-size:1.1rem;color:var(--brand)">@Model.TicketNumber</div>
+            </div>
+            <span class="badge @sc" style="font-size:.82rem;padding:.4em 1em">@Model.Status</span>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:.9rem;font-size:.84rem">
+            <div><div style="font-size:.7rem;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-bottom:.2rem">Category</div><div class="fw-600">@Model.Category</div></div>
+            <div><div style="font-size:.7rem;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-bottom:.2rem">Priority</div><div class="fw-600">@Model.Priority</div></div>
+            <div><div style="font-size:.7rem;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-bottom:.2rem">Building</div><div class="fw-600">@Model.Building</div></div>
+            <div><div style="font-size:.7rem;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-bottom:.2rem">Unit</div><div class="fw-600">@Model.Unit</div></div>
+            <div><div style="font-size:.7rem;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-bottom:.2rem">Submitted</div><div class="fw-600">@Model.SubmittedDate.ToString("d MMM yyyy")</div></div>
+            @if (!string.IsNullOrEmpty(Model.AssignedStaff))
+            {
+              <div><div style="font-size:.7rem;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-bottom:.2rem">Assigned To</div><div class="fw-600">@Model.AssignedStaff</div></div>
+            }
+          </div>
+          @if (!string.IsNullOrEmpty(Model.Description))
+          {
+            <div style="margin-top:.9rem;padding-top:.9rem;border-top:1px solid var(--border);font-size:.84rem;color:var(--text2)">@Model.Description</div>
+          }
+          @if (!string.IsNullOrEmpty(Model.ResolutionNotes))
+          {
+            <div style="margin-top:.9rem;padding:.85rem;background:#f0fdf4;border-radius:8px;font-size:.84rem;color:#065f46">
+              <div style="font-weight:700;margin-bottom:.3rem"><i class="bi bi-check2-circle me-1"></i>Resolution Notes</div>
+              @Model.ResolutionNotes
+            </div>
+          }
+        </div>
+      }
+    }
+  </div>
+</div>
