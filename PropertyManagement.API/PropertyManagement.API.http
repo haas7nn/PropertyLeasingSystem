@@ -1,0 +1,6 @@
+@PropertyManagement.API_HostAddress = http://localhost:5015
+
+GET {{PropertyManagement.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
